@@ -1,0 +1,24 @@
+@let(title = 'Mes todos')
+@include('pages/partials/header')
+    <section class="tw-py-4">
+        <div class="tw-container tw-flex tw-flex-col tw-items-center tw-px-4 tw-py-4 tw-mx-auto">
+            <p class="tw-py-6 tw-block tw-max-w-2xl tw-mt-tw-4 tw-text-xl tw-text-gray-500 tw-dark:text-gray-500 tw-text-center tw-font-bold">Liste des todos</p>
+            <ul class="tw-w-full">
+                @each(todo in todos)
+                    <li class="tw-border tw-border-gray-300 tw-p-1">
+                        <div class="tw-flex tw-items-center tw-justify-between tw-p-1">
+                            <a href="{{ route('todos/show', [todo.id]) }}" class="tw-text-blue-400" >{{todo.name}}</a>
+                            <form action="{{ route('todos/show', [todo.id]) }}?_method=DELETE" method="POST">
+                                {{ csrfField() }}
+                                <button class="tw-py-2 tw-px-4 tw-bg-red-500 tw-hover:bg-red-400 tw-text-white tw-rounded-lg">Supprimer</button>
+                            </form>
+                        </div> 
+                    </li>
+                @end
+            </ul>
+            <div class="py-5">
+                <a href="{{ route('todos/create') }}" class="tw-py-2 tw-px-4 tw-bg-blue-400 tw-hover:bg-blue-300 tw-text-white tw-cursor-pointer tw-rounded-lg">Ajouter un todo</a>
+            </div>
+        </div>
+    </section>
+@include('pages/partials/footer')

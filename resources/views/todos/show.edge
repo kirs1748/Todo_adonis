@@ -1,0 +1,14 @@
+@include('pages/partials/header')
+    <section class="tw-py-4">
+    <div class="tw-container tw-flex tw-flex-col tw-items-center tw-px-4 tw-py-4 tw-mx-auto">
+            <p class="tw-py-6 tw-block tw-max-w-2xl tw-mt-4 tw-text-xl tw-text-gray-500 tw-dark:text-gray-500 tw-text-center ftw-ont-bold">Nom du todo: {{ todo.name }}</p>
+            <p>Description: {{ todo.description }}</p>
+    <div class="tw-py-5">
+        <a href="{{ route('todos/edit', [ todo.id ]) }}" class="tw-py-2 tw-px-4 tw-bg-blue-400 tw-hover:bg-blue-300 tw-text-white tw-cursor-pointer tw-rounded-lg">Modifier un todo</a>
+    </div>
+    <div class="tw-py-2">
+        <a href="{{ route('todos/index') }}" class="">Retour a la liste</a>
+    </div>
+    </div>
+    </section>
+@include('pages/partials/footer')
