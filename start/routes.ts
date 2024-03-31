@@ -9,6 +9,7 @@
 import TodosController from '#controllers/todos_controller'
 import AuthController from '#controllers/auth_controller'
 import router from '@adonisjs/core/services/router'
+import { middleware } from '#start/kernel'
 
 router.on('/').render('home').as('home')
 router.on('/contact').render('pages/contact')
@@ -25,10 +26,10 @@ router.post('/todos/edit/:id', [TodosController, 'update']).as("todos/update")
 router.get('/todo/:id', [TodosController, 'show']).as("todos/show")
 router.delete('/todo/:id', [TodosController, 'destroy']).as("todos/destroy")
 
-router.get('/register', [AuthController, 'register']).as("auth/register")
-router.post('/register', [AuthController, 'handleRegister'])
-router.get('/login', [AuthController, 'login']).as("auth/login")
-router.post('/login', [AuthController, 'handleLogin'])
+router.get('/register', [AuthController, 'register']).as("auth/register").use(middleware.guest())
+router.post('/register', [AuthController, 'handleRegister']).use(middleware.guest())
+router.get('/login', [AuthController, 'login']).as("auth/login").use(middleware.guest())
+router.post('/login', [AuthController, 'handleLogin']).use(middleware.guest())
 
-router.delete('/login', [AuthController, 'logout']).as("auth/logout")
+router.delete('/login', [AuthController, 'logout']).as("auth/logout").use(middleware.auth())
 
