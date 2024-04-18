@@ -1,4 +1,5 @@
 import Todo from '#models/todo'
+import { updateTodoValidator } from '#validators/todo'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class TodosController {
@@ -17,12 +18,11 @@ export default class TodosController {
         return view.render('todos/edit', {todo})
     }
 
-    async update({ response, params : {id}, request }: HttpContext) {
+    async update({ request, response, params:{id} }: HttpContext) {
         const todo = await Todo.findOrFail(id)
-        const data = request.body()
-        todo.merge({ ...data }).save()
-        response.redirect().toRoute('todos/show', [ todo.id ])
-
+        const data = await request.validateUsing(updateTodoValidator)
+        await todo.merge({ ...data }).save()
+        response.redirect().toRoute("todos/index", [todo])
     }
 
     async store({ request, response }: HttpContext) {

@@ -3,6 +3,7 @@
     <div class="tw-container tw-flex tw-flex-col tw-items-center tw-px-4 tw-py-4 tw-mx-auto">
     <p class="tw-py-6 tw-block tw-max-w-2xl tw-mt-4 tw-text-xl tw-text-gray-500 tw-dark:text-gray-500 tw-text-center tw-font-bold">Modifier un todo</p>
         <form method="post" class="tw-w-full">
+            {{ csrfField() }}
         <div class="tw-py-5">
             <div>
                 <label class="tw-font-semibold tw-text-blue-600">Nom du todo</label>
@@ -18,7 +19,6 @@
             <div>
                 <textarea name="description" class="tw-w-full tw-rounded-lg tw-border tw-border-gray-200 tw-p-4 tw-border tw-border-gray-800">{{ todo.description }}</textarea>
             </div>
-        {{ csrfField() }}
         <input type="submit" value="Envoyer" class="tw-w-full tw-rounded-lg tw-border tw-border-gray-200 tw-bg-blue-400 tw-hover:bg-blue-300 tw-text-white tw-py-2 tw-cursor-pointer">
         </div>
         </form>

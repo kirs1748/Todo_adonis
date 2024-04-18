@@ -1,7 +1,7 @@
 @let(title = 'Connexion')
 @include('pages/partials/header')
 
-<h1 class="text-center">Connexion</h1>
+<h1 class="text-center">{{title}}</h1>
 
 <form method="post" class="w-75 mx-auto p-3 bg-light rounded">
     {{ csrfField() }}
@@ -9,5 +9,11 @@
     @!component('components/input', { name : 'password', label : 'Mot de passe', type : 'password'})
     <button type="submit" class="btn btn-outline-info mt-2">{{title}}</button>
 </form>
+
+<div class="w-50 mx-auto">
+    <p>Ou avec</p>
+    <a href="{{ route('github/redirect') }}" class="btn btn-outline-info mt-2 d-block mx-auto">Github</a>
+    <a href="{{ route('auth/forgot-password') }}" class="btn btn-outline-info mt-2 d-block mx-auto">Mot de passe oublié</a>
+</div>
 
 @include('pages/partials/footer')

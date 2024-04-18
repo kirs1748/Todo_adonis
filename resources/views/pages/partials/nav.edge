@@ -3,15 +3,17 @@
     <div class="container-fluid">
         <a class="navbar-brand" href="/">Todo Adonis</a>
         <div>
-            <a href="{{ route('todos/index')}}" class="active tw-text-black text-decoration-none">Mes Todos</a>
-            @if(<!auth.use('web').isAuthenticated)
+            @if(!auth.use('web').isAuthenticated)
             <a href="{{ route('auth/register')}}" class="btn btn-outline-info">Inscription</a>
             <a href="{{ route('auth/login')}}" class="btn btn-outline-info">Connexion</a>
             @else
-            <form action="{{ route('auth/logout') }}?_methode=DELETE_" method="post">
-                {{ csrfField() }}
-                <button type="submit" class="btn btn-outline-warning">Déconnexion</button>
-            </form>
+            <div class="d-flex gap-3 align-items-center">
+                    @!component('components/user-badge', { username : auth.use('web').user.username, thumbnail : auth.use('web').user.thumbnail })
+                <form action="{{ route('auth/logout') }}?_method=DELETE" method="post">
+                    {{ csrfField() }}
+                    <button type="submit" class="btn btn-outline-warning">Déconnexion</button>
+                </form>
+            </div>            
             @end
             <a href="{{ route('todos/index')}}" class="active tw-text-black text-decoration-none">Mes Todos</a>     
         </div>
