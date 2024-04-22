@@ -8,14 +8,15 @@
             <a href="{{ route('auth/login')}}" class="btn btn-outline-info">Connexion</a>
             @else
             <div class="d-flex gap-3 align-items-center">
-                    @!component('components/user-badge', { username : auth.use('web').user.username, thumbnail : auth.use('web').user.thumbnail })
+                @!component('components/user-badge', { username : auth.use('web').user.username, thumbnail : auth.use('web').user.thumbnail })
+                <a href="{{ route('post/create')}}" class="btn btn-outline-info">Publier ?</a>
+                <a href="{{ route('todos/index')}}" class="active tw-text-black text-decoration-none">Mes Todos</a>   
                 <form action="{{ route('auth/logout') }}?_method=DELETE" method="post">
                     {{ csrfField() }}
                     <button type="submit" class="btn btn-outline-warning">Déconnexion</button>
                 </form>
             </div>            
-            @end
-            <a href="{{ route('todos/index')}}" class="active tw-text-black text-decoration-none">Mes Todos</a>     
+            @end   
         </div>
     </div>
 </nav>

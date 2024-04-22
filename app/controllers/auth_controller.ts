@@ -26,6 +26,7 @@ export default class AuthController {
         }
 
         const filePath = `users/${thumbnail?.fileName || username + ".png"}`
+        
         await User.create({email, username, thumbnail : filePath, password})
         session.flash("success", "Inscription Ok")
         return response.redirect().toRoute("auth/login")

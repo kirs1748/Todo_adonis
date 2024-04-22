@@ -1,0 +1,21 @@
+@let(title = 'Publications')
+@include('pages/partials/header')
+
+<div class="container">
+    <h1 class="text-center my-2">{{title}}</h1>
+
+    <div class="d-flex justify-content-between flex-wrap">
+        @each(post in posts)
+        <div class="card mt-2" style="width: 18rem;">
+            <img src="{{post.thumbnail}}" class="card-img-top" alt="{{post.title}}">
+            <div class="card-body">
+              <h5 title="{{post.title}}" class="card-title">{{ truncate(post.title, 25) }}</h5>
+              <p class="card-text">Ecrit par : </p>
+              <a href="#" class="btn btn-primary">Lire l'article</a>
+            </div>
+          </div>
+        @end
+    </div>
+</div>
+
+@include('pages/partials/footer')
