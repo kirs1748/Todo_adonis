@@ -7,23 +7,25 @@ export default class Post extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
 
-  @column({ isPrimary: true })
+  @column()
   declare title: string
 
-  @column({ isPrimary: true })
+  @column()
   declare slug: string
 
-  @column({ isPrimary: true })
+  @column()
   declare content: string
 
-  @column({ isPrimary: true })
+  @column()
   declare thumbnail: string
 
-  @column({ isPrimary: true })
+  @column()
   declare userID: number
 
-  @belongsTo(() => User)
-  declare user : BelongsTo<typeof User>
+  @belongsTo(() => User, {
+    foreignKey: 'userID', // defaults to userId
+  })
+  declare user: BelongsTo<typeof User>
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

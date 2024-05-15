@@ -1,10 +1,14 @@
-import auth from '#config/auth'
 import Post from '#models/post'
 import FileUploaderService from '#services/file_uploader_service'
-import { storePostValidator } from '#validators/post'
+import { storePostValidator, updatePostValidator } from '#validators/post'
 import { inject } from '@adonisjs/core'
 import stringHelpers from '@adonisjs/core/helpers/string'
 import type { HttpContext } from '@adonisjs/core/http'
+import { Marked } from "marked"
+import  {  markedHighlight  }  from  "marked-highlight" 
+import  hljs  from  'highlight.js' 
+import * as fs from 'node:fs'
+import { unlink } from 'node:fs/promises'
 
 @inject()
 export default class PostController {
@@ -13,11 +17,18 @@ export default class PostController {
   /**
    * Display a list of resource
    */
-  async index({ view }: HttpContext) {
+  async index({ view, request }: HttpContext) {
+    const page = request.input('page', 1)
+    const limit = 4
     const posts = await Post
                           .query()
                           .select('id', 'title', 'thumbnail', 'slug', 'user_id')
-                          //.preload('user', (u) => u.select('username'))
+                          .preload('user', (u) => u.select('username'))
+                          .orderBy('created_at', 'desc')
+                          .paginate(page, limit)
+    
+
+    posts.baseUrl('/posts')
     return view.render('posts/posts', {posts})
   }
 
@@ -33,7 +44,7 @@ export default class PostController {
    */
   async store({ request, auth, session, response }: HttpContext) {
     const {content, thumbnail, title} = await request.validateUsing(storePostValidator)
-    const slug = stringHelpers.slug(title).toLocaleUpperCase()
+    const slug = stringHelpers.slug(title)
     const filePath = await this.fileUploaderService.upload(thumbnail, slug, 'posts')
 
     await Post.create({
@@ -52,20 +63,72 @@ export default class PostController {
   /**
    * Show individual record
    */
-  async show({ params }: HttpContext) {}
+  async show({ params, response, view }: HttpContext) {
+    const {slug, id} = params
+    const post = await Post.findByOrFail('id', id)
+    const marked = new Marked(
+      markedHighlight({
+        langPrefix: 'hljs language-',
+        highlight(code, lang, info) {
+          const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+          return hljs.highlight(code, { language }).value;
+        }
+      })
+    );
+    const content = marked.parse(post.content)
+    if(post.slug !== slug) {
+      return response.redirect().toRoute('post/show', {slug : post.slug, id})
+    }
+    return view.render('posts/show', {content, postTitle : post.title})
+  }
 
   /**
    * Edit individual record
    */
-  async edit({ params }: HttpContext) {}
+  async edit({ params, view }: HttpContext) {
+    const {id} = params
+    const post = await Post.findByOrFail('id', id)
+    return view.render('posts/edit', {post})
+  }
 
   /**
    * Handle form submission for the edit action
    */
-  async update({}: HttpContext) {}
+  async update({params, request, session, response}: HttpContext) {
+    const {id} = params
+    const { content, thumbnail, title } = await request.validateUsing(updatePostValidator)
+    const post = await Post.findByOrFail('id', id)
+    const slug = post.title !== title && stringHelpers.slug(title, {lower : true})
+    if(thumbnail) {
+      await unlink(`public/${post.thumbnail}`)
+      const filePath = await this.fileUploaderService.upload(thumbnail, '', 'posts')
+      post.merge({thumbnail : filePath})
+    }
+    if(slug) post.merge({title, slug})
+    if(post.content !== content) post.merge({content})
+    await post.save()
+
+    session.flash('success', 'Votre article a bien été modifié')
+    return response.redirect().toRoute('/posts')
+  }
+
 
   /**
    * Delete record
    */
-  async destroy({ params }: HttpContext) {}
+  async destroy({ session, response, request }: HttpContext) {
+    const postId = request.param('id')
+    console.log('postId', postId)
+
+    const post = await Post.findOrFail(request.param('id'))
+    console.log('posts', post)
+    fs.unlink(`public/${post.thumbnail}`, (err) => {
+      if (err) throw err; 
+    }); 
+    await post.delete()
+
+    session.flash('success', 'Votre contenu a bien été supprimé')
+    return response.redirect().toRoute('/posts')
+
+  }
 }
