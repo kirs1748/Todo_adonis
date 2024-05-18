@@ -5,7 +5,13 @@ import { AuthorizerResponse } from '@adonisjs/bouncer/types'
 
 export default class PostPolicy extends BasePolicy {
 
-    alterPost(user: User, post: Post) {
+    async before(user : User) {
+        if(user && user.role === "ADMIN" ){
+            return true
+        }
+    }
+
+    alterPost(user: User, post: Post) : AuthorizerResponse {
         return user.id === post.userID
     }
   

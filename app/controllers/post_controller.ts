@@ -100,10 +100,14 @@ export default class PostController {
   /**
    * Handle form submission for the edit action
    */
-  async update({params, request, session, response}: HttpContext) {
+  async update({params, request, session, response, bouncer}: HttpContext) {
     const {id} = params
     const { content, thumbnail, title } = await request.validateUsing(updatePostValidator)
     const post = await Post.findByOrFail('id', id)
+    if(await bouncer.with(PostPolicy).denies('alterPost', post)) {
+      session.flash('error', 'Action interdite')
+      response.redirect().back()
+    }
     const slug = post.title !== title && stringHelpers.slug(title, {lower : true})
     if(thumbnail) {
       await unlink(`public/${post.thumbnail}`)
@@ -122,11 +126,14 @@ export default class PostController {
   /**
    * Delete record
    */
-  async destroy({ session, response, request }: HttpContext) {
+  async destroy({ session, response, request, bouncer }: HttpContext) {
     const postId = request.param('id')
     console.log('postId', postId)
-
     const post = await Post.findOrFail(request.param('id'))
+    if(await bouncer.with(PostPolicy).denies('alterPost', post)) {
+      session.flash('error', 'Action interdite')
+      response.redirect().back()
+    }
     console.log('posts', post)
     fs.unlink(`public/${post.thumbnail}`, (err) => {
       if (err) throw err; 
