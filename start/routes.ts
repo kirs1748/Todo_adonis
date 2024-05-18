@@ -30,7 +30,7 @@ router.delete('/todo/:id', [TodosController, 'destroy']).as("todos/destroy").use
 router.get('/register', [AuthController, 'register']).as("auth/register").use(middleware.guest())
 router.post('/register', [AuthController, 'handleRegister']).use(middleware.guest())
 router.get('/login', [AuthController, 'login']).as("auth/login").use(middleware.guest())
-router.post('/login', [AuthController, 'handleLogin']).use(middleware.guest())
+router.post('/login', [AuthController, 'handleLogin']).use(middleware.guest()).as('auth.handleLogin')
 
 router.get('/forgot-password', [ResetPasswordController, 'forgotPassword']).as("auth/forgot-password").use(middleware.guest())
 router.post('/forgot-password', [ResetPasswordController, 'handleForgotPassword']).use(middleware.guest())

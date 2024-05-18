@@ -9,6 +9,8 @@ import  {  markedHighlight  }  from  "marked-highlight"
 import  hljs  from  'highlight.js' 
 import * as fs from 'node:fs'
 import { unlink } from 'node:fs/promises'
+import { alterPost } from '#abilities/main'
+import PostPolicy from '#policies/post_policy'
 
 @inject()
 export default class PostController {
@@ -85,9 +87,13 @@ export default class PostController {
   /**
    * Edit individual record
    */
-  async edit({ params, view }: HttpContext) {
+  async edit({ params, view, bouncer, response, session }: HttpContext) {
     const {id} = params
     const post = await Post.findByOrFail('id', id)
+    if(await bouncer.with(PostPolicy).denies('alterPost', post)) {
+      session.flash('error', 'Action interdite')
+      response.redirect().back()
+    }
     return view.render('posts/edit', {post})
   }
 
