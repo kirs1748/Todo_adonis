@@ -11,7 +11,7 @@
                 @!component('components/user-badge', { username : auth.use('web').user.username, thumbnail : auth.use('web').user.thumbnail })
                 <a href="{{ route('post/create')}}" class="btn btn-outline-info" up-layer="new" up-mode="drawer" up-size="full" >Publier ?</a>
                 <a href="{{ route('todos/index')}}" class="active tw-text-black text-decoration-none">Mes Todos</a>   
-                <form action="{{ route('auth/logout') }}?_method=DELETE" method="post">
+                <form action="{{ route('auth.logout') }}?_method=DELETE" method="post">
                     {{ csrfField() }}
                     <button type="submit" class="btn btn-outline-warning">Déconnexion</button>
                 </form>
