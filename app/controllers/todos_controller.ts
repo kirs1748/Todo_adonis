@@ -3,8 +3,14 @@ import { updateTodoValidator } from '#validators/todo'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class TodosController {
-    async index({ view }: HttpContext) {
-        const todos = await Todo.all()
+    async index({ view, request }: HttpContext) {
+        const page = request.input('page', 1)
+        const limit = 9
+        const todos = await Todo
+                                .query()
+                                .orderBy('created_at', 'desc')
+                                .paginate(page, limit)
+        todos.baseUrl('/todos')
         return view.render("todos/index", {todos})
     }
 

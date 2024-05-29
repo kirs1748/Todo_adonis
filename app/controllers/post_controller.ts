@@ -9,7 +9,6 @@ import  {  markedHighlight  }  from  "marked-highlight"
 import  hljs  from  'highlight.js' 
 import * as fs from 'node:fs'
 import { unlink } from 'node:fs/promises'
-import { alterPost } from '#abilities/main'
 import PostPolicy from '#policies/post_policy'
 
 @inject()
@@ -46,7 +45,7 @@ export default class PostController {
    */
   async store({ request, auth, session, response }: HttpContext) {
     const {content, thumbnail, title} = await request.validateUsing(storePostValidator)
-    const slug = stringHelpers.slug(title)
+    const slug = stringHelpers.slug(title, {lower : true})
     const filePath = await this.fileUploaderService.upload(thumbnail, slug, 'posts')
 
     await Post.create({
@@ -58,7 +57,7 @@ export default class PostController {
     })
     
     session.flash('success', 'Votre article a bien été publié')
-    return response.redirect().toRoute('home')
+    return response.redirect().toRoute('posts')
 
   }
 

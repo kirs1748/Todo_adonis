@@ -1,0 +1,10 @@
+@let(title = 'User')
+@include('pages/partials/header')
+
+@!component('components/user-badge', { username : auth.use('web').user.username, thumbnail : auth.use('web').user.thumbnail })
+
+@if(auth.use('web').isAuthenticated)
+  <p class="tw-font-bold tw-text-9xl">{{ auth.use('web').user.username }}</p>
+  <img src="{{ auth.use('web').user.thumbnail }}" alt="{{ auth.use('web').user.username }}">
+@end
+@include('pages/partials/footer')

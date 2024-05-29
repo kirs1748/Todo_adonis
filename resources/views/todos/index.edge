@@ -21,4 +21,16 @@
             </div>
         </div>
     </section>
+
+    @if(todos.hasPages)
+    <nav aria-label="Page navigation example">
+        <ul class="pagination tw-justify-center">
+            <li class="page-item {{todos.currentPage === todos.firstPage ? 'disabled' : ''}}"><a class="page-link" href="{{todos.getPreviousPageUrl()}}">Précédent</a></li>
+            @each(anchor in todos.getUrlsForRange(1, todos.lastPage))
+            <li class="page-item {{anchor.isActive ? 'active' : ''}}"><a class="page-link" href="{{anchor.url}}">{{anchor.page}}</a></li>     
+            @end
+            <li class="page-item {{!todos.hasMorePages ? 'disabled' : ''}}"><a class="page-link" href="{{todos.getNextPageUrl()}}">Suivant</a></li>
+        </ul>
+    </nav>
+@end
 @include('pages/partials/footer')

@@ -1,6 +1,5 @@
 @let(title = 'Publications')
 @include('pages/partials/header')
-
 <div class="container">
     <h1 class="text-center my-2">{{title}}</h1>
 
@@ -12,13 +11,16 @@
               <h5 title="{{post.title}}" class="card-title">{{ truncate(post.title, 25) }}</h5>
               <p class="card-text">Ecrit par : {{post.user.username}}</p>
               <a href="{{route('post/show', {slug : post.slug, id : post.id})}}" class="btn btn-primary">Lire l'article</a>
+              @eval(await auth.use('web').check())
+              @if(auth.use('web').isAuthenticated && auth.use('web').user.id === post.userID)            
               <div class="d-flex mt-3 justify-content-between">
-                <a href="{{route('post/edit', {id : post.id})}}" class="btn btn-outline-warning">Modifier l'article</a>
+                <a href="{{route('post/edit', {id : post.id})}}" class="btn btn-outline-warning"> Modifier l'article</a>
                 <form action="{{route('post/delete', {id: post.id})}}?_method=DELETE" method="post">
                   {{ csrfField() }}
                   <button class="btn btn-outline-danger" type="submit">Supprimer</button>
                 </form>
-              </div>
+              </div> 
+              @end
             </div>
           </div>
         @end
@@ -27,7 +29,7 @@
 
 @if(posts.hasPages)
 <nav aria-label="Page navigation example">
-  <ul class="pagination">
+  <ul class="pagination tw-justify-center p-5">
     <li class="page-item {{posts.currentPage === posts.firstPage ? 'disabled' : ''}}"><a class="page-link" href="{{posts.getPreviousPageUrl()}}">Précédent</a></li>
     @each(anchor in posts.getUrlsForRange(1, posts.lastPage))
     <li class="page-item {{anchor.isActive ? 'active' : ''}}"><a class="page-link" href="{{anchor.url}}">{{anchor.page}}</a></li>     

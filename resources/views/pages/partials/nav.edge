@@ -6,11 +6,13 @@
             @if(!auth.use('web').isAuthenticated)
             <a href="{{ route('auth/register')}}" class="btn btn-outline-info" up-target=".main">Inscription</a>
             <a href="{{ route('auth/login')}}" class="btn btn-outline-info" up-target=".main">Connexion</a>
+            <a href="{{ route('posts')}}" class="active tw-text-black text-decoration-none">Posts</a>   
             @else
             <div class="d-flex gap-3 align-items-center">
                 @!component('components/user-badge', { username : auth.use('web').user.username, thumbnail : auth.use('web').user.thumbnail })
                 <a href="{{ route('post/create')}}" class="btn btn-outline-info" up-layer="new" up-mode="drawer" up-size="full" >Publier ?</a>
-                <a href="{{ route('todos/index')}}" class="active tw-text-black text-decoration-none">Mes Todos</a>   
+                <a href="{{ route('todos/index')}}" class="active tw-text-black text-decoration-none">Mes Todos</a>
+                <a href="{{ route('posts')}}" class="active tw-text-black text-decoration-none">Posts</a>      
                 <form action="{{ route('auth.logout') }}?_method=DELETE" method="post">
                     {{ csrfField() }}
                     <button type="submit" class="btn btn-outline-warning">Déconnexion</button>

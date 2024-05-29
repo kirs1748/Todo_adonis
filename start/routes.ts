@@ -7,8 +7,9 @@
 |
 */
 import router from '@adonisjs/core/services/router'
-import './routes/users'
-import './routes/todos'
-import './routes/posts'
+import './routes/auth.js'
+import './routes/todos.js'
+import './routes/posts.js'
+import './routes/user.js'
 
 router.on('/').render('home').as('home')
